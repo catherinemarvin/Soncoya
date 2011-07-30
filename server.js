@@ -6,6 +6,12 @@ var express = require("express");
 //require nowjs
 var nowjs = require('now');
 
+//require openid
+var openid = require('openid');
+
+var url = require('url');
+var querystring = require('querystring');
+
 //start express
 var server = express.createServer();
 
@@ -45,27 +51,27 @@ server.listen(80);
 //Allow the logging level of nowjs to be changed (run node server.js 1 for nothing and 3 for everything)
 var everyone = nowjs.initialize(server, {socketio:{"log level": process.argv[2]}});
 
-//Client calls this after clearing the recipie list div to get all the recipies pertaining to search entry.
-everyone.now.getRecipieList = function(searchQuery) {
+//Client calls this after clearing the recipe list div to get all the recipes pertaining to search entry.
+everyone.now.getRecipeList = function(searchQuery) {
 	var self = this;
 	if (searchQuery == "") {
-		collrecipies.find( { }, function(err, docs){
+		collrecipes.find( { }, function(err, docs){
 			if (docs) {
 				for (var i in docs) {
-					self.now.appendRecipie(docs[i]);
+					self.now.appendRecipe(docs[i]);
 				}
 			} else {
-				self.now.appendRecipie(null);
+				self.now.appendRecipe(null);
 			}
-		}
+		});
 	} else {
-		collrecipies.find( { tags: searchQuery }, function(err, docs){
+		collrecipes.find( { tags: searchQuery }, function(err, docs){
 			if (docs) {
 				for (var i in docs) {
-					self.now.appendRecipie(docs[i]);
+					self.now.appendRecipe(docs[i]);
 				}
 			} else {
-				self.now.appendRecipie(null);
+				self.now.appendRecipe(null);
 			}
 		});
 	}
@@ -73,24 +79,24 @@ everyone.now.getRecipieList = function(searchQuery) {
 
 /*
 ---------------------------------------------
-Client calls this when adding a recipie
+Client calls this when adding a recipe
 ---------------------------------------------
-title = string (Title of Recipie)
-cost = integer (Cost of Recipie in Dollars)
-averageCost = integer (No input. Will eventually become the average cost of the people that review the recipie.)
+title = string (Title of Recipe)
+cost = integer (Cost of Recipe in Dollars)
+averageCost = integer (No input. Will eventually become the average cost of the people that review the recipe.)
 averageCostArray = [object(user, cost)] (array containing the costs by users)
-ingredients = [object(item, quantity-us, quantity-metric, measure-us, measure-metric)] (array containing the items in recipie with both us and metic values)
+ingredients = [object(item, quantity-us, quantity-metric, measure-us, measure-metric)] (array containing the items in recipe with both us and metic values)
 instructions = [html string] (first element is #1 instruction, etc.)
-pictures = [picture location string] (array of pictures for recipie, first is the main one displayed on page)
-submitter = string (user that submitted the recipie)
-rating = integer (rating of recipie, default 0)
-ratingArray = [object(user, rating)] (array of user ratings for recipie)
-reviewArray = [object(user, string review)] (array of user reviews for recipie)
-time = object(prepTime, cookTime, totalTime) (object of the time for the recipie)
-tags = [string] (tags pertaining to the recipie for searching)
+pictures = [picture location string] (array of pictures for recipe, first is the main one displayed on page)
+submitter = string (user that submitted the recipe)
+rating = integer (rating of recipe, default 0)
+ratingArray = [object(user, rating)] (array of user ratings for recipe)
+reviewArray = [object(user, string review)] (array of user reviews for recipe)
+time = object(prepTime, cookTime, totalTime) (object of the time for the recipe)
+tags = [string] (tags pertaining to the recipe for searching)
 */
-everyone.now.addRecipie = function(title, cost, ingredients, instructions, picture, submitter, time, tags, rId) {
-	collrecipies.insert(
+everyone.now.addRecipe = function(title, cost, ingredients, instructions, picture, submitter, time, tags, rId) {
+	collrecipes.insert(
 		{	
 			title: title,
 			cost: cost,
@@ -104,9 +110,9 @@ everyone.now.addRecipie = function(title, cost, ingredients, instructions, pictu
 			reviewArray: [],
 			time: time,
 			tags: tags,
-			recipieId: rId
+			recipeId: rId
 		}
 	);
 	collrecipes.ensureIndex( { tags: 1 } );
-	everyone.now.refreshRecipieList(tags);
+	everyone.now.refreshRecipeList(tags);
 }
