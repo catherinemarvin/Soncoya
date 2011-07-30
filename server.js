@@ -15,6 +15,7 @@ var db = new Db('Soncoya', new Server("localhost", 27017, {}), {native_parser: f
 server.set('view options', { layout: false});
 server.set('view engine', 'ejs');
 server.use(express.errorHandler({ dumpExceptions: true, showStack: true}));
+server.use(express.static(__dirname + '/static'));
 server.set('views', __dirname + '/views');
 
 //Routes
