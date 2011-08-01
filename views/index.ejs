@@ -2,7 +2,63 @@
 <html lang="en">
 	<head>
 		<title>Soncoya - The Future of Cooking!</title>
-		<link rel="stylesheet" href="master.css" type="text/css" >
+		<link rel="stylesheet" href="master.css" type="text/css">
+		
+		<script src="/nowjs/now.js"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script> 
+		
+		
+		<script type = "text/javascript">
+			$(document).ready(function() {
+				now.appendRecipe = function (recipe) {
+					
+					/*
+						<div id="recipe5000" class="recipeBox">
+							<div class="recipeInfo">
+								<div class="recipeTitle">Chicken Cordon Bleu</div>
+								<div class="recipeEtc">By: Frederick Meyer | Price: $3 | Rating: 5/5</div>
+							</div>
+							<div class="recipeImg"><img src="http://placekitten.com/100/100"></div>
+						</div>
+						*/
+					var div = $("#recipelistdiv");
+					var recipeId = recipe.recipeId;
+					div.append("<div id=\"recipe"+recipeId+"\" class=\"recipeBox\"></div>");
+					var title = recipe.title;
+					var author = recipe.submitter;
+					var price = recipe.cost;
+					var rating = recipe.rating;
+					var newdiv = $("#recipe"+recipeId);
+					var infodiv = $("<div>");
+					var titlediv = $("<div>");
+					var etcdiv = $("<div>");
+					var imgdiv = $("<div>");
+					infodiv.addClass("recipeInfo");
+					titlediv.addClass("recipeTitle");
+					etcdiv.addClass("recipeEtc");
+					imgdiv.addClass("recipeImg");
+					
+					newdiv.append(infodiv);
+					infodiv.append(titlediv);
+					infodiv.append(etcdiv);
+					newdiv.append(imgdiv);
+					
+					titlediv.append(title);
+					etcdiv.append("By: " + author + " | Price: $" + price + " | Rating: " + rating + "/5");
+					imgdiv.append("<img src='http://placekitten.com/100/100'></div>");
+					div.animate({ scrollTop: div.attr("scrollHeight") }, 500);		
+				};
+				
+				now.refreshRecipeList = function() {
+					
+				};
+				now.ready(function() {
+				});
+				
+				var recipe = { recipeId: 1, title: 'chicken', submitter: 'fmeyer', cost: 3, rating: 5};
+				now.appendRecipe(recipe);
+			});
+		</script>
 	</head>
 	<body>
 		<div id="bodywrapper">
@@ -10,8 +66,23 @@
 				<div id="logo">Soncoya</div>
 				<div id="headertext">Sign In - Register</div>
 			</div>
-			<div id="recipelist">
-				Placeholder :D
+			<div id="recipelistdiv">
+				<div id="recipe5000" class="recipeBox">
+					<div class="recipeInfo">
+						<div class="recipeTitle">Chicken Cordon Bleu</div>
+						<div class="recipeEtc">By: Frederick Meyer | Price: $3 | Rating: 5/5</div>
+					</div>
+					<div class="recipeImg"><img src="http://placekitten.com/100/100"></div>
+				</div>
+				
+				<div id="recipe9001" class="recipeBox">
+					<div class="recipeInfo">
+						<div class="recipeTitle">Muffins</div>
+						<div class="recipeEtc">By: Pinkie Pie | Price $2.25 | Rating: 6/5</div>
+					</div>
+					<div class="recipeImg"><img src="http://placekitten.com/100/100"></div>
+				</div>
+			
 			</div>
 		</div>
 	</body>
