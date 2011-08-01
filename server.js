@@ -34,6 +34,14 @@ db.open(function(err, conn) {
 	});
 });
 
+var relyingParty = new openid.RelyingParty(
+    'http://localhost:1337/verify', // Verification URL (yours)
+    null, // Realm (optional, specifies realm for OpenID authentication)
+    false, // Use stateless verification
+    false, // Strict mode
+    [] // List of extensions to enable and include
+);
+
 //Configuration (Express)
 server.set('view options', { layout: false});
 server.set('view engine', 'ejs');
@@ -43,11 +51,11 @@ server.set('views', __dirname + '/views');
 
 //Routes
 server.get("/", function (req, res) {
-  res.render("index");
+	res.render("index");
 });
 
 //Set server listening port (need root for port 80)
-server.listen(80);
+server.listen(1337);
 
 //Allow the logging level of nowjs to be changed (run node server.js 1 for nothing and 3 for everything)
 var everyone = nowjs.initialize(server, {socketio:{"log level": process.argv[2]}});
@@ -95,6 +103,7 @@ ratingArray = [object(user, rating)] (array of user ratings for recipe)
 reviewArray = [object(user, string review)] (array of user reviews for recipe)
 time = object(prepTime, cookTime, totalTime) (object of the time for the recipe)
 tags = [string] (tags pertaining to the recipe for searching)
+recipeId = random integer for each recipe
 */
 everyone.now.addRecipe = function(title, cost, ingredients, instructions, picture, submitter, time, tags, rId) {
 	collrecipes.insert(
