@@ -53,10 +53,25 @@
 					
 				};
 				now.ready(function() {
+					hideDivs();
 				});
 				
-				var recipe = { recipeId: 1, title: 'chicken', submitter: 'fmeyer', cost: 3, rating: 5};
+				var recipe = { recipeId: 1, title: 'Fried Rice', submitter: 'Kevin Hwang', cost: .50, rating: 9001};
 				now.appendRecipe(recipe);
+				
+				hideDivs = function() {
+					$('#logindiv').slideUp(200);
+					$('#registerdiv').slideUp(200);
+				}
+				
+				displaySignIn = function() {
+					$('#registerdiv').slideUp(200);
+					$('#logindiv').slideToggle(200);
+				}
+				displayRegister = function() {
+					$('#logindiv').slideUp(200);
+					$('#registerdiv').slideToggle(200);
+				}
 			});
 		</script>
 	</head>
@@ -64,8 +79,27 @@
 		<div id="bodywrapper">
 			<div id="header">
 				<div id="logo">Soncoya</div>
-				<div id="headertext">Sign In - Register</div>
+				<div id="headertext"><a href="#" onclick="displaySignIn();">Sign In</a> - <a href="#" onclick="displayRegister();">Register</a></div>
 			</div>
+			
+			<div id="logindiv">
+				<form name="loginform" action="/login" method="post">
+					Username: <input type="text" id="uname" name="uname" placeholder="Rainbow Dash"/><br>
+					Password: <input type="password" id="pwd" name="pwd" /></br>
+					<input type="button" id="loginsubmit" value="Login!"/>
+				</form>
+			</div>
+			
+			<div id="registerdiv">
+				<form name="registerform" action="/register" method="post">
+					Username: <input type="text" id="unamereg" name="uname" placeholder="Rainbow Dash"/></br>
+					Password: <input type="password" id="pwdreg" name="pwd"/></br>
+					<input type="button" id="registersubmit" value="Register!"/>
+				</form>
+			</div>
+			
+			
+			
 			<div id="recipelistdiv">
 				<div id="recipe5000" class="recipeBox">
 					<div class="recipeInfo">
