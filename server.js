@@ -86,6 +86,8 @@ everyone.now.getRecipeList = function(searchQuery) {
 	}
 }
 
+
+
 /*
 ---------------------------------------------
 Client calls this when adding a recipe
@@ -125,4 +127,68 @@ everyone.now.addRecipe = function(title, cost, ingredients, instructions, pictur
 	);
 	collrecipes.ensureIndex( { tags: 1 } );
 	everyone.now.refreshRecipeList(tags);
+}
+
+/*
+----------------------------------------------
+Users Database
+----------------------------------------------
+username = the username of the user
+password = the password of the user
+loggedIn = boolean.
+uId: userID. Used for NowJS
+
+*/
+
+//Attempts to register a user. Adds you to the database if your name is not there.
+everyone.now.tryRegister = function(uname, pwd) {
+	var self = this;
+	collusers.findOne({username: uname}, function (err, doc) {
+		if (doc) { //i.e. if there is an entry found for you.
+			self.now.reRegister();
+		} else {
+			collusers.insert({username: uname, password: pwd, uId: 0,loggedIn: false});
+			self.now.finishRegister();
+		}
+	});
+};
+
+//Function called if your username is taken.
+everyone.now.reRegister = function() {
+	this.now.reRegisterAlert();
+}
+
+//Clears out the register div and also logs you in automatically.
+everyone.now.finishRegister = function () {
+	//eventually have it clear out the divs and auto-login
+}
+
+//Function called when user attempts to log-in. It's called "tryLogin" because you might fail.
+everyone.now.tryLogin = function(uname, pwd) {
+	var self = this;
+	collusers.findOne({username: uname}, function (err, doc) {
+		if (doc.password == pwd) {
+			self.now.finishLogin(uname);
+		} else {
+			self.now.reLogin();
+		}
+	});
+}
+
+//If you're already logged in, do this. In this case we have it display an alert on the client side.
+everyone.now.reLogin = function() {
+	this.now.reLoginAlert();
+}
+
+//Sets your entry in the database to LOGGED-IN. Also clears the divs.
+everyone.now.finishLogin = function(uname) {
+	//eventually have it clear the divs
+	var self = this;
+	collusers.findOne({username: uname}, function(err, doc) { //no error checking needed because you only call this if you are in the db
+		doc.loggedIn = true; 
+		doc.uId = self.user.clientId;
+		collusers.update({username: uname}, doc, function (err, doc) {
+			//do nothing, you've updated :D
+		});
+	});
 }

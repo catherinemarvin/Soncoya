@@ -52,6 +52,23 @@
 				now.refreshRecipeList = function() {
 					
 				};
+				
+				$("#registersubmit").click(function() {
+					now.tryRegister($('#unamereg').val(), $('#pwdreg').val());
+				})
+				
+				$("#loginsubmit").click(function() {
+					now.tryLogin($('#unamelogin'),val(), $('#pwdlogin').val());
+				});
+				
+				now.reRegisterAlert = function() {
+					alert("Username is already taken. Sadface.");
+				}
+				
+				now.reLoginAlert = function() {
+					alert("Username or password incorrect.");
+				}
+				
 				now.ready(function() {
 					hideDivs();
 				});
@@ -84,8 +101,8 @@
 			
 			<div id="logindiv">
 				<form name="loginform" action="/login" method="post">
-					Username: <input type="text" id="uname" name="uname" placeholder="Rainbow Dash"/><br>
-					Password: <input type="password" id="pwd" name="pwd" /></br>
+					Username: <input type="text" id="unamelogin" name="uname" placeholder="Rainbow Dash"/><br>
+					Password: <input type="password" id="pwdlogin" name="pwd" /></br>
 					<input type="button" id="loginsubmit" value="Login!"/>
 				</form>
 			</div>
