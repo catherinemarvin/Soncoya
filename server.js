@@ -143,6 +143,11 @@ uId: userID. Used for NowJS
 */
 
 //Attempts to register a user. Adds you to the database if your name is not there.
+
+/* TODO:
+-Hash passwords
+-Username check (no blank names...)
+*/
 everyone.now.tryRegister = function(uname, pwd) {
 	var self = this;
 	collusers.findOne({username: uname}, function (err, doc) {
@@ -161,11 +166,19 @@ everyone.now.reRegister = function() {
 };
 
 //Clears out the register div and also logs you in automatically.
+
+/* TODO:
+-Clear div, push it off-screen.
+-Auto-login.
+*/
 everyone.now.finishRegister = function () {
-	//eventually have it clear out the divs and auto-login
 }
 
 //Function called when user attempts to log-in. It's called "tryLogin" because you might fail.
+
+/* TODO:
+should have separate error cases for: already logged in vs. username/pwd doesn't match.
+*/
 everyone.now.tryLogin = function(uname, pwd) {
 	var self = this;
 	collusers.findOne({username: uname}, function (err, doc) {
@@ -182,9 +195,8 @@ everyone.now.reLogin = function() {
 	this.now.reLoginAlert();
 }
 
-//Sets your entry in the database to LOGGED-IN.
+//Sets your entry in the database to LOGGED-IN. Afterwards, goes to cleanLogin() on the server side to clear the div and push it up.
 everyone.now.finishLogin = function(uname) {
-	//eventually have it clear the divs
 	var self = this;
 	collusers.findOne({username: uname}, function(err, doc) { //no error checking needed because you only call this if you are in the db
 		doc.loggedIn = true; 
