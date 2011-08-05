@@ -34,6 +34,7 @@ db.open(function(err, conn) {
 	});
 });
 
+//is this the remains of the OpenID stuff? 
 var relyingParty = new openid.RelyingParty(
     'http://localhost:1337/verify', // Verification URL (yours)
     null, // Realm (optional, specifies realm for OpenID authentication)
@@ -107,6 +108,7 @@ time = object(prepTime, cookTime, totalTime) (object of the time for the recipe)
 tags = [string] (tags pertaining to the recipe for searching)
 recipeId = random integer for each recipe
 */
+
 everyone.now.addRecipe = function(title, cost, ingredients, instructions, picture, submitter, time, tags, rId) {
 	collrecipes.insert(
 		{	
@@ -156,7 +158,7 @@ everyone.now.tryRegister = function(uname, pwd) {
 //Function called if your username is taken.
 everyone.now.reRegister = function() {
 	this.now.reRegisterAlert();
-}
+};
 
 //Clears out the register div and also logs you in automatically.
 everyone.now.finishRegister = function () {
@@ -180,7 +182,7 @@ everyone.now.reLogin = function() {
 	this.now.reLoginAlert();
 }
 
-//Sets your entry in the database to LOGGED-IN. Also clears the divs.
+//Sets your entry in the database to LOGGED-IN.
 everyone.now.finishLogin = function(uname) {
 	//eventually have it clear the divs
 	var self = this;
@@ -188,7 +190,7 @@ everyone.now.finishLogin = function(uname) {
 		doc.loggedIn = true; 
 		doc.uId = self.user.clientId;
 		collusers.update({username: uname}, doc, function (err, doc) {
-			//do nothing, you've updated :D
+			self.now.cleanLogin();
 		});
 	});
 }
