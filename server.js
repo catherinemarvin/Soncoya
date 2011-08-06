@@ -6,12 +6,6 @@ var express = require("express");
 //require nowjs
 var nowjs = require('now');
 
-//require openid
-var openid = require('openid');
-
-var url = require('url');
-var querystring = require('querystring');
-
 //start express
 var server = express.createServer();
 
@@ -33,15 +27,6 @@ db.open(function(err, conn) {
 		collusers = coll;
 	});
 });
-
-//is this the remains of the OpenID stuff? 
-var relyingParty = new openid.RelyingParty(
-    'http://localhost:1337/verify', // Verification URL (yours)
-    null, // Realm (optional, specifies realm for OpenID authentication)
-    false, // Use stateless verification
-    false, // Strict mode
-    [] // List of extensions to enable and include
-);
 
 //Configuration (Express)
 server.set('view options', { layout: false});
