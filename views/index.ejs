@@ -75,6 +75,12 @@
 					$('#pwdlogin').val("");
 				}
 				
+				now.cleanRegister = function() {
+					$('#registerdiv').slideUp(200);
+					$('#unamereg').val("");
+					$('#pwdreg').val("");
+				}
+				
 				hideDivs = function() {
 					$('#logindiv').slideUp(200);
 					$('#registerdiv').slideUp(200);

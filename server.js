@@ -172,6 +172,8 @@ everyone.now.reRegister = function() {
 -Auto-login.
 */
 everyone.now.finishRegister = function () {
+	var self = this;
+	self.now.cleanRegister();
 }
 
 //Function called when user attempts to log-in. It's called "tryLogin" because you might fail.
