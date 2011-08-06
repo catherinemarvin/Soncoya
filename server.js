@@ -41,7 +41,7 @@ server.get("/", function (req, res) {
 });
 
 //Set server listening port (need root for port 80)
-server.listen(1337);
+server.listen(80);
 
 //Allow the logging level of nowjs to be changed (run node server.js 1 for nothing and 3 for everything)
 var everyone = nowjs.initialize(server, {socketio:{"log level": process.argv[2]}});
