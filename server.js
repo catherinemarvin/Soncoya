@@ -6,12 +6,6 @@ var express = require("express");
 //require nowjs
 var nowjs = require('now');
 
-//require openid
-var openid = require('openid');
-
-var url = require('url');
-var querystring = require('querystring');
-
 //start express
 var server = express.createServer();
 
@@ -34,15 +28,6 @@ db.open(function(err, conn) {
 	});
 });
 
-//is this the remains of the OpenID stuff? 
-var relyingParty = new openid.RelyingParty(
-    'http://localhost:1337/verify', // Verification URL (yours)
-    null, // Realm (optional, specifies realm for OpenID authentication)
-    false, // Use stateless verification
-    false, // Strict mode
-    [] // List of extensions to enable and include
-);
-
 //Configuration (Express)
 server.set('view options', { layout: false});
 server.set('view engine', 'ejs');
@@ -56,7 +41,7 @@ server.get("/", function (req, res) {
 });
 
 //Set server listening port (need root for port 80)
-server.listen(1337);
+server.listen(80);
 
 //Allow the logging level of nowjs to be changed (run node server.js 1 for nothing and 3 for everything)
 var everyone = nowjs.initialize(server, {socketio:{"log level": process.argv[2]}});
