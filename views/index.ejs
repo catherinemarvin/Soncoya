@@ -73,7 +73,7 @@
 					$('#logindiv').slideToggle(200);
 					$('#unamelogin').val("");
 					$('#pwdlogin').val("");
-					$('#headertext').html("<a href='#'>Logout</a>");
+					$('#headertext').html("<a href='#' onclick='now.tryLogout()'>Logout</a>");
 				}
 				
 				//Cleans register div and removes it. Also replaces REGISTER - SIGNIN with just LOGOUT.
@@ -81,10 +81,13 @@
 					$('#registerdiv').slideToggle(200);
 					$('#unamereg').val("");
 					$('#pwdreg').val("");
-					$('#headertext').html("<a href='#'>Logout</a>");
+					$('#headertext').html("<a href='#' onclick='now.tryLogout()'>Logout</a>");
 				}
 				
-				
+				//puts back the Register | Signin stuff
+				now.finishLogout = function() {
+					$('#headertext').html('<a href="#" onclick="displaySignIn();">Sign In</a> - <a href="#" onclick="displayRegister();">Register</a>');
+				}
 				
 				hideDivs = function() {
 					$('#logindiv').hide()

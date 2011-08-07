@@ -146,7 +146,7 @@ everyone.now.tryRegister = function(uname, pwd) {
 			self.now.reRegister();
 		} else {
 			collusers.insert({username: uname, password: pwd, uId: 0,loggedIn: false});
-			self.now.finishRegister();
+			self.now.finishRegister(uname);
 		}
 	});
 };
@@ -157,13 +157,15 @@ everyone.now.reRegister = function() {
 };
 
 //Clears out the register div and also logs you in automatically.
-
-/* TODO:
--Auto-login.
-*/
-everyone.now.finishRegister = function () {
+everyone.now.finishRegister = function (uname) {
 	var self = this;
-	self.now.cleanRegister();
+	collusers.findOne({username: uname}, function (err, doc) {
+		doc.loggedIn = true;
+		doc.uId = self.user.clientId;
+		collusers.update({username: uname}, doc, function (err, doc) {
+			self.now.cleanRegister();
+		});
+	});
 }
 
 //Function called when user attempts to log-in. It's called "tryLogin" because you might fail.
@@ -197,6 +199,17 @@ everyone.now.finishLogin = function(uname) {
 			self.now.cleanLogin();
 		});
 	});
+}
+
+everyone.now.tryLogout = function() {
+	var self = this;
+	collusers.findOne({uId: self.user.clientId}, function(err, doc) {
+		doc.loggedIn = false;
+		doc.uId = 0;
+		collusers.update({uId: self.user.clientId}, doc, function(err, doc) {
+			self.now.finishLogout();
+		})
+	})
 }
 
 
