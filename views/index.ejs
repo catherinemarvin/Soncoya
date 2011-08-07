@@ -70,29 +70,33 @@
 				}
 				
 				now.cleanLogin = function() {
-					$('#logindiv').slideUp(200);
+					$('#logindiv').slideToggle(200);
 					$('#unamelogin').val("");
 					$('#pwdlogin').val("");
 				}
 				
 				now.cleanRegister = function() {
-					$('#registerdiv').slideUp(200);
+					$('#registerdiv').slideToggle(200);
 					$('#unamereg').val("");
 					$('#pwdreg').val("");
 				}
 				
 				hideDivs = function() {
-					$('#logindiv').slideUp(200);
-					$('#registerdiv').slideUp(200);
+					//$('#logindiv').slideUp(200);
+				//	$('#registerdiv').slideUp(200);
+					$('#logindiv').hide()
+					$('#registerdiv').hide();
 				}
 				
 				displaySignIn = function() {
-					$('#registerdiv').slideUp(200);
-					$('#logindiv').slideToggle(200);
+					//$('#registerdiv').slideToggle('slow');
+					//registerdiv was slideUp
+					$('#logindiv').slideToggle('slow');
 				}
 				displayRegister = function() {
-					$('#logindiv').slideUp(200);
-					$('#registerdiv').slideToggle(200);
+					//$('#logindiv').slideToggle('slow');
+					//registerdiv was slideUp
+					$('#registerdiv').slideToggle('slow');
 				}
 				
 				now.ready(function() {
