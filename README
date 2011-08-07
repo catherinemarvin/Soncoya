@@ -1,1 +1,1 @@
-Dependencies: Node, Express, MongoDB, openid, now
+Dependencies: Node, Express, MongoDB, openid, now, crypto
