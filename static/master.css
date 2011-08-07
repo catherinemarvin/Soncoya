@@ -17,6 +17,10 @@ img {
 	margin: 0px 0px 0px 0px;
 }
 
+#logindiv, #registerdiv {
+	overflow-y: auto;
+}
+
 div#bodywrapper {
 	width: 800px;
 	left: 25%;

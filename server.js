@@ -128,7 +128,6 @@ Users Database
 username = string. the username of the user
 password = string. the password of the user. NEED TO SALT + HASH EVENTUALLY.
 loggedIn = boolean. tells you if a user is logged in.
-uId = integer. userID. Used for NowJS.
 
 */
 
@@ -147,7 +146,7 @@ everyone.now.tryRegister = function(uname, pwd) {
 		} else {
 			var hash = crypto.createHash('sha1');
 			hash.update(pwd);
-			collusers.insert({username: uname, password: hash.digest('hex'), uId: 0,loggedIn: false});
+			collusers.insert({username: uname, password: hash.digest('hex'),loggedIn: false});
 			self.now.finishRegister(uname, pwd);
 		}
 	});
@@ -163,7 +162,6 @@ everyone.now.finishRegister = function (uname, pwd) {
 	var self = this;
 	collusers.findOne({username: uname}, function (err, doc) {
 		doc.loggedIn = true;
-		doc.uId = self.user.clientId;
 		collusers.update({username: uname}, doc, function (err, doc) {
 			self.now.cleanRegister(uname, pwd);
 		});
@@ -203,8 +201,7 @@ everyone.now.reLogin = function() {
 everyone.now.finishLogin = function(uname, pwd) {
 	var self = this;
 	collusers.findOne({username: uname}, function(err, doc) { //no error checking needed because you only call this if you are in the db
-		doc.loggedIn = true; 
-		doc.uId = self.user.clientId;
+		doc.loggedIn = true;
 		collusers.update({username: uname}, doc, function (err, doc) {
 			self.now.cleanLogin(uname, pwd);
 		});
@@ -212,13 +209,20 @@ everyone.now.finishLogin = function(uname, pwd) {
 };
 
 everyone.now.tryLogout = function () {
-	var self = this;
-	collusers.findOne({uId: self.user.clientId}, function (err, doc) {
-		doc.loggedIn = false;
-		doc.uId = 0;
-		collusers.update({uId: self.user.clientId}, doc, function (err, doc) {
-			self.now.finishLogout();
-		});
+	var cookie = this.user.cookie, self = this;
+	collusers.findOne({username: cookie.username}, function (err, doc) {
+		console.log("HURRRR DURRRR");
+		console.log(cookie);
+		console.log(doc.password);
+		var hash = crypto.createHash('sha1');
+		hash.update(cookie.pwd);
+		if (doc.password == hash.digest('hex')) {
+			console.log("IT IS YOU!!!!!!!!!");
+			doc.loggedIn = false;
+			collusers.update({username: cookie.username}, doc, function (err, doc) {
+				self.now.finishLogout();
+			});
+		}
 	});
 };
 
@@ -240,7 +244,7 @@ everyone.now.setCookie = function (uname, pwd) {
 }
 
 nowjs.on('connect', function () {
-	if (Object.keys(this.user.cookie).length && this.user.cookie.username && this.user.cookie.pwd) { //if there is a cookie
+	if (Object.keys(this.user.cookie).length && this.user.cookie.username !== undefined && this.user.cookie.pwd) { //if there is a cookie
 		this.now.tryLogin(this.user.cookie.username, this.user.cookie.pwd);
 	} else { //if there isn't a cookie
 	
@@ -254,7 +258,6 @@ nowjs.on('disconnect', function () {
 		console.log(doc);
 		if (doc) {
 			doc.loggedIn = false;
-			doc.uId = 0;
 			collusers.update({username: cookie.username}, doc, function (err, doc) {
 				//nothing happens now, you're gone. leave. go away.
 			});

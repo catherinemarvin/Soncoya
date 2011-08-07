@@ -5,7 +5,7 @@
 		<link rel="stylesheet" href="master.css" type="text/css">
 		
 		<script src="/nowjs/now.js"></script>
-		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script> 
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script> 
 		
 		<!-- include the hashing stuff -->
 		<script type="text/javascript" src="jshash/sha1.js"></script>
@@ -69,7 +69,7 @@
 				}
 				
 				now.cleanLogin = function(uname, pwd) {
-					$('#logindiv').slideToggle(200);
+					$('#logindiv').slideUp(200);
 					$('#unamelogin').val("");
 					$('#pwdlogin').val("");
 					$('#headertext').html("<a href='#' onclick='now.tryLogout()'>Logout</a>");
@@ -82,7 +82,7 @@
 				
 				//Cleans register div and removes it. Also replaces REGISTER - SIGNIN with just LOGOUT.
 				now.cleanRegister = function(uname, pwd) {
-					$('#registerdiv').slideToggle(200);
+					$('#registerdiv').slideUp(200);
 					$('#unamereg').val("");
 					$('#pwdreg').val("");
 					$('#headertext').html("<a href='#' onclick='now.tryLogout()'>Logout</a>");
@@ -93,7 +93,10 @@
 					now.setCookie(uname, pwd);
 				}
 				
-				
+				now.nullCookie = function () {
+					$.cookie('username', "");
+					$.cookie('pwd', "");
+				}
 				
 				//puts back the Register | Signin stuff
 				now.finishLogout = function() {
@@ -103,17 +106,21 @@
 				}
 				
 				hideDivs = function() {
-					$('#logindiv').hide()
+					$('#logindiv').hide();
 					$('#registerdiv').hide();
 				}
 				
 				displaySignIn = function() {
-					$('#logindiv').slideToggle(200);
-					$('#registerdiv').hide();
+					$('#registerdiv').slideUp(200);
+					setTimeout(function () {
+						$('#logindiv').slideToggle(200);
+					}, 200);
 				}
 				displayRegister = function() {
-					$('#registerdiv').slideToggle(200);
-					$('#logindiv').hide();
+					$('#logindiv').slideUp(200);
+					setTimeout(function () {
+						$('#registerdiv').slideToggle(200);
+					}, 200);
 				}
 				
 				now.ready(function() {
@@ -123,7 +130,11 @@
 				var recipe = { recipeId: 1, title: 'Fried Rice', submitter: 'Kevin Hwang', cost: .50, rating: 9001};
 				now.appendRecipe(recipe);
 				
-				
+				$('input').keypress(function (e) {
+					if (e.keyCode == 13) {
+						$(this).parent().children().last().click();
+					}
+				})
 			});
 		</script>
 	</head>
