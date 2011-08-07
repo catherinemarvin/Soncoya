@@ -1,3 +1,4 @@
+//version number
 var version = 0.1;
 
 //require express
@@ -5,6 +6,9 @@ var express = require("express");
 
 //require nowjs
 var nowjs = require('now');
+
+//require crypto
+var crypto = require('crypto');
 
 //start express
 var server = express.createServer();
@@ -76,7 +80,7 @@ everyone.now.getRecipeList = function(searchQuery) {
 
 /*
 ---------------------------------------------
-Client calls this when adding a recipe
+Recipe Database
 ---------------------------------------------
 title = string (Title of Recipe)
 cost = integer (Cost of Recipe in Dollars)
@@ -94,6 +98,7 @@ tags = [string] (tags pertaining to the recipe for searching)
 recipeId = random integer for each recipe
 */
 
+//Client calls this when adding a recipe
 everyone.now.addRecipe = function(title, cost, ingredients, instructions, picture, submitter, time, tags, rId) {
 	collrecipes.insert(
 		{	
@@ -120,10 +125,10 @@ everyone.now.addRecipe = function(title, cost, ingredients, instructions, pictur
 ----------------------------------------------
 Users Database
 ----------------------------------------------
-username = the username of the user
-password = the password of the user
-loggedIn = boolean.
-uId: userID. Used for NowJS
+username = string. the username of the user
+password = string. the password of the user. NEED TO SALT + HASH EVENTUALLY.
+loggedIn = boolean. tells you if a user is logged in.
+uId = integer. userID. Used for NowJS.
 
 */
 
@@ -133,6 +138,7 @@ uId: userID. Used for NowJS
 -Hash passwords
 -Username check (no blank names...)
 */
+
 everyone.now.tryRegister = function(uname, pwd) {
 	var self = this;
 	collusers.findOne({username: uname}, function (err, doc) {
@@ -153,7 +159,6 @@ everyone.now.reRegister = function() {
 //Clears out the register div and also logs you in automatically.
 
 /* TODO:
--Clear div, push it off-screen.
 -Auto-login.
 */
 everyone.now.finishRegister = function () {
