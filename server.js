@@ -148,7 +148,7 @@ everyone.now.tryRegister = function(uname, pwd) {
 			var hash = crypto.createHash('sha1');
 			hash.update(pwd);
 			collusers.insert({username: uname, password: hash.digest('hex'), uId: 0,loggedIn: false});
-			self.now.finishRegister(uname);
+			self.now.finishRegister(uname, pwd);
 		}
 	});
 };
@@ -159,13 +159,13 @@ everyone.now.reRegister = function() {
 };
 
 //Clears out the register div and also logs you in automatically.
-everyone.now.finishRegister = function (uname) {
+everyone.now.finishRegister = function (uname, pwd) {
 	var self = this;
 	collusers.findOne({username: uname}, function (err, doc) {
 		doc.loggedIn = true;
 		doc.uId = self.user.clientId;
 		collusers.update({username: uname}, doc, function (err, doc) {
-			self.now.cleanRegister();
+			self.now.cleanRegister(uname, pwd);
 		});
 	});
 };
@@ -176,18 +176,20 @@ everyone.now.finishRegister = function (uname) {
 should have separate error cases for: already logged in vs. username/pwd doesn't match.
 */
 everyone.now.tryLogin = function(uname, pwd) {
+	console.log("Username: " + uname);
+	console.log("Password: " + pwd);
 	var self = this;
 	collusers.findOne({username: uname}, function (err, doc) {
 		if (doc) {
 			var hash = crypto.createHash('sha1');
 			hash.update(pwd);
 			if (doc.password == hash.digest('hex')) {
-				self.now.finishLogin(uname);
+				self.now.finishLogin(uname, pwd);
 			} else {
 				self.now.reLogin();
 			}
 		} else {
-			self.now.reLogin();
+			self.now.reLogin(uname, pwd);
 		}
 	});
 };
@@ -198,23 +200,23 @@ everyone.now.reLogin = function() {
 };
 
 //Sets your entry in the database to LOGGED-IN. Afterwards, goes to cleanLogin() on the server side to clear the div and push it up.
-everyone.now.finishLogin = function(uname) {
+everyone.now.finishLogin = function(uname, pwd) {
 	var self = this;
 	collusers.findOne({username: uname}, function(err, doc) { //no error checking needed because you only call this if you are in the db
 		doc.loggedIn = true; 
 		doc.uId = self.user.clientId;
 		collusers.update({username: uname}, doc, function (err, doc) {
-			self.now.cleanLogin();
+			self.now.cleanLogin(uname, pwd);
 		});
 	});
 };
 
-everyone.now.tryLogout = function() {
+everyone.now.tryLogout = function () {
 	var self = this;
-	collusers.findOne({uId: self.user.clientId}, function(err, doc) {
+	collusers.findOne({uId: self.user.clientId}, function (err, doc) {
 		doc.loggedIn = false;
 		doc.uId = 0;
-		collusers.update({uId: self.user.clientId}, doc, function(err, doc) {
+		collusers.update({uId: self.user.clientId}, doc, function (err, doc) {
 			self.now.finishLogout();
 		});
 	});
@@ -223,7 +225,43 @@ everyone.now.tryLogout = function() {
 
 //this is our onjoin function. 
 
+/* 
+***************
+COOKIE SPECS
+***************
+username
+pwd - singly hashed
+
+*/
+
+everyone.now.setCookie = function (uname, pwd) {
+	this.user.cookie.username = uname;
+	this.user.cookie.pwd = pwd;
+}
+
 nowjs.on('connect', function () {
+	if (Object.keys(this.user.cookie).length && this.user.cookie.username && this.user.cookie.pwd) { //if there is a cookie
+		this.now.tryLogin(this.user.cookie.username, this.user.cookie.pwd);
+	} else { //if there isn't a cookie
+	
+	}
+});
+
+nowjs.on('disconnect', function () {
+	var cookie = this.user.cookie;
+	console.log(cookie);
+	collusers.findOne({username: cookie.username}, function (err, doc) {
+		console.log(doc);
+		if (doc) {
+			doc.loggedIn = false;
+			doc.uId = 0;
+			collusers.update({username: cookie.username}, doc, function (err, doc) {
+				//nothing happens now, you're gone. leave. go away.
+			});
+		} else {
+			//nothing
+		}
+	});
 });
 
 

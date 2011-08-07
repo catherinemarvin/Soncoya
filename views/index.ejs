@@ -8,7 +8,10 @@
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script> 
 		
 		<!-- include the hashing stuff -->
-		<script type="text/javascript" src="jshash/sha1-min.js"></script>
+		<script type="text/javascript" src="jshash/sha1.js"></script>
+		
+		<!-- include the cookie stuff -->
+		<script type="text/javascript" src="jquery.cookie.js"></script>
 		
 		<script type = "text/javascript">
 			$(document).ready(function() {
@@ -49,12 +52,12 @@
 					if ($('#unamereg').val() == "" | $('#pwdreg').val() == "") {
 						alert("Please don't input blanks");
 					} else {
-						now.tryRegister($('#unamereg').val(), hex_sha1($('#pwdreg').val()));
+						now.tryRegister($('#unamereg').val(), b64_sha1($('#pwdreg').val()));
 					}
 				})
 				
 				$("#loginsubmit").click(function() {
-					now.tryLogin($('#unamelogin').val(), hex_sha1($('#pwdlogin').val()));
+					now.tryLogin($('#unamelogin').val(), b64_sha1($('#pwdlogin').val()));
 				});
 				
 				now.reRegisterAlert = function() {
@@ -65,24 +68,38 @@
 					alert("Username or password incorrect.");
 				}
 				
-				now.cleanLogin = function() {
+				now.cleanLogin = function(uname, pwd) {
 					$('#logindiv').slideToggle(200);
 					$('#unamelogin').val("");
 					$('#pwdlogin').val("");
 					$('#headertext').html("<a href='#' onclick='now.tryLogout()'>Logout</a>");
+					
+					//set cookie here
+					$.cookie('username', uname);
+					$.cookie('pwd', pwd);
+					now.setCookie(uname, pwd);
 				}
 				
 				//Cleans register div and removes it. Also replaces REGISTER - SIGNIN with just LOGOUT.
-				now.cleanRegister = function() {
+				now.cleanRegister = function(uname, pwd) {
 					$('#registerdiv').slideToggle(200);
 					$('#unamereg').val("");
 					$('#pwdreg').val("");
 					$('#headertext').html("<a href='#' onclick='now.tryLogout()'>Logout</a>");
+					
+					//set cookie here
+					$.cookie('username', uname);
+					$.cookie('pwd', pwd);
+					now.setCookie(uname, pwd);
 				}
+				
+				
 				
 				//puts back the Register | Signin stuff
 				now.finishLogout = function() {
 					$('#headertext').html('<a href="#" onclick="displaySignIn();">Sign In</a> - <a href="#" onclick="displayRegister();">Register</a>');
+					$.cookie('username', null, {expires: -1});
+					$.cookie('pwd', null, {expires: -1});
 				}
 				
 				hideDivs = function() {
