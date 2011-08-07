@@ -73,29 +73,26 @@
 					$('#logindiv').slideToggle(200);
 					$('#unamelogin').val("");
 					$('#pwdlogin').val("");
+					$('#headertext').html("<a href='#'>Logout</a>");
 				}
 				
+				//Cleans register div and removes it. Also replaces REGISTER - SIGNIN with just LOGOUT.
 				now.cleanRegister = function() {
 					$('#registerdiv').slideToggle(200);
 					$('#unamereg').val("");
 					$('#pwdreg').val("");
+					$('#headertext').html("<a href='#'>Logout</a>");
 				}
 				
 				hideDivs = function() {
-					//$('#logindiv').slideUp(200);
-				//	$('#registerdiv').slideUp(200);
 					$('#logindiv').hide()
 					$('#registerdiv').hide();
 				}
 				
 				displaySignIn = function() {
-					//$('#registerdiv').slideToggle('slow');
-					//registerdiv was slideUp
 					$('#logindiv').slideToggle('slow');
 				}
 				displayRegister = function() {
-					//$('#logindiv').slideToggle('slow');
-					//registerdiv was slideUp
 					$('#registerdiv').slideToggle('slow');
 				}
 				
@@ -114,7 +111,9 @@
 		<div id="bodywrapper">
 			<div id="header">
 				<div id="logo">Soncoya</div>
-				<div id="headertext"><a href="#" onclick="displaySignIn();">Sign In</a> - <a href="#" onclick="displayRegister();">Register</a></div>
+				<div id="headertext">
+					<a href="#" onclick="displaySignIn();">Sign In</a> - <a href="#" onclick="displayRegister();">Register</a>
+				</div>
 			</div>
 			
 			<div id="logindiv">
