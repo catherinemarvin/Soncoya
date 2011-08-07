@@ -74,7 +74,7 @@ everyone.now.getRecipeList = function(searchQuery) {
 			}
 		});
 	}
-}
+};
 
 
 
@@ -119,7 +119,7 @@ everyone.now.addRecipe = function(title, cost, ingredients, instructions, pictur
 	);
 	collrecipes.ensureIndex( { tags: 1 } );
 	everyone.now.refreshRecipeList(tags);
-}
+};
 
 /*
 ----------------------------------------------
@@ -166,7 +166,7 @@ everyone.now.finishRegister = function (uname) {
 			self.now.cleanRegister();
 		});
 	});
-}
+};
 
 //Function called when user attempts to log-in. It's called "tryLogin" because you might fail.
 
@@ -176,18 +176,22 @@ should have separate error cases for: already logged in vs. username/pwd doesn't
 everyone.now.tryLogin = function(uname, pwd) {
 	var self = this;
 	collusers.findOne({username: uname}, function (err, doc) {
-		if (doc.password == pwd) {
-			self.now.finishLogin(uname);
+		if (doc) {
+			if (doc.password == pwd) {
+				self.now.finishLogin(uname);
+			} else {
+				self.now.reLogin();
+			}
 		} else {
 			self.now.reLogin();
 		}
 	});
-}
+};
 
 //If you're already logged in, do this. In this case we have it display an alert on the client side.
 everyone.now.reLogin = function() {
 	this.now.reLoginAlert();
-}
+};
 
 //Sets your entry in the database to LOGGED-IN. Afterwards, goes to cleanLogin() on the server side to clear the div and push it up.
 everyone.now.finishLogin = function(uname) {
@@ -199,7 +203,7 @@ everyone.now.finishLogin = function(uname) {
 			self.now.cleanLogin();
 		});
 	});
-}
+};
 
 everyone.now.tryLogout = function() {
 	var self = this;
@@ -208,9 +212,9 @@ everyone.now.tryLogout = function() {
 		doc.uId = 0;
 		collusers.update({uId: self.user.clientId}, doc, function(err, doc) {
 			self.now.finishLogout();
-		})
-	})
-}
+		});
+	});
+};
 
 
 //this is our onjoin function. 
