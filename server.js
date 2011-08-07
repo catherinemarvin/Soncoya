@@ -145,7 +145,9 @@ everyone.now.tryRegister = function(uname, pwd) {
 		if (doc) { //i.e. if there is an entry found for you.
 			self.now.reRegister();
 		} else {
-			collusers.insert({username: uname, password: pwd, uId: 0,loggedIn: false});
+			var hash = crypto.createHash('sha1');
+			hash.update(pwd);
+			collusers.insert({username: uname, password: hash.digest('hex'), uId: 0,loggedIn: false});
 			self.now.finishRegister(uname);
 		}
 	});
@@ -177,7 +179,9 @@ everyone.now.tryLogin = function(uname, pwd) {
 	var self = this;
 	collusers.findOne({username: uname}, function (err, doc) {
 		if (doc) {
-			if (doc.password == pwd) {
+			var hash = crypto.createHash('sha1');
+			hash.update(pwd);
+			if (doc.password == hash.digest('hex')) {
 				self.now.finishLogin(uname);
 			} else {
 				self.now.reLogin();

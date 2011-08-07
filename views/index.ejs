@@ -7,20 +7,12 @@
 		<script src="/nowjs/now.js"></script>
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script> 
 		
+		<!-- include the hashing stuff -->
+		<script type="text/javascript" src="jshash/sha1-min.js"></script>
 		
 		<script type = "text/javascript">
 			$(document).ready(function() {
 				now.appendRecipe = function (recipe) {
-					
-					/*
-						<div id="recipe5000" class="recipeBox">
-							<div class="recipeInfo">
-								<div class="recipeTitle">Chicken Cordon Bleu</div>
-								<div class="recipeEtc">By: Frederick Meyer | Price: $3 | Rating: 5/5</div>
-							</div>
-							<div class="recipeImg"><img src="http://placekitten.com/100/100"></div>
-						</div>
-						*/
 					var div = $("#recipelistdiv");
 					var recipeId = recipe.recipeId;
 					div.append("<div id=\"recipe"+recipeId+"\" class=\"recipeBox\"></div>");
@@ -54,11 +46,15 @@
 				};
 				
 				$("#registersubmit").click(function() {
-					now.tryRegister($('#unamereg').val(), $('#pwdreg').val());
+					if ($('#unamereg').val() == "" | $('#pwdreg').val() == "") {
+						alert("Please don't input blanks");
+					} else {
+						now.tryRegister($('#unamereg').val(), hex_sha1($('#pwdreg').val()));
+					}
 				})
 				
 				$("#loginsubmit").click(function() {
-					now.tryLogin($('#unamelogin').val(), $('#pwdlogin').val());
+					now.tryLogin($('#unamelogin').val(), hex_sha1($('#pwdlogin').val()));
 				});
 				
 				now.reRegisterAlert = function() {
