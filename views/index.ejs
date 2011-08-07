@@ -60,16 +60,20 @@
 					now.refreshRecipeList("Apple");
 				});
 				
+				$('#filter').keyup(function () {
+					now.refreshRecipeList($(this).val());
+				});
+				
 				$('#refreshRecipeListP').click(function () {
 					now.refreshRecipeList("Potato");
 				});
 				
 				$("#exampleRecipe").click(function() {
-					now.addRecipe("DERP SOUP", "13", [{item:"muffins", "quantity-us":"2", "quantity-metric":"3", "measure-us":"lbs", "measure-metric":"tons"}, {item:"potatoes", "quantity-us":"2", "quantity-metric":"3", "measure-us":"lbs", "measure-metric":"tons"}], ["herp", "derp", "done"], "http://placekitten.com/100/100", "Derpy Whooves", "9000", ["potatoes", "potato", "muffin", "muffins"], parseInt(("" + Math.random()).substring(2)));
+					now.addRecipe("DERP SOUP", "13", [{item:"muffins", "quantity-us":"2", "quantity-metric":"3", "measure-us":"lbs", "measure-metric":"tons"}, {item:"potatoes", "quantity-us":"2", "quantity-metric":"3", "measure-us":"lbs", "measure-metric":"tons"}], ["herp", "derp", "done"], "http://placekitten.com/100/100", "Derpy Whooves", "9000", ["potatoes", "potato", "muffin", "muffins"], parseInt(("" + Math.random()).substring(2)), $('#filter').val());
 				});
 				
 				$("#exampleRecipe1").click(function() {
-					now.addRecipe("TOMATO SOUP", "13", [{item:"muffins", "quantity-us":"2", "quantity-metric":"3", "measure-us":"lbs", "measure-metric":"tons"}, {item:"potatoes", "quantity-us":"2", "quantity-metric":"3", "measure-us":"lbs", "measure-metric":"tons"}], ["herp", "derp", "done"], "http://placekitten.com/100/100", "Derpy Whooves", "9000", ["tomatoes", "tomato", "apple", "apple"], parseInt(("" + Math.random()).substring(2)));
+					now.addRecipe("TOMATO SOUP", "13", [{item:"muffins", "quantity-us":"2", "quantity-metric":"3", "measure-us":"lbs", "measure-metric":"tons"}, {item:"potatoes", "quantity-us":"2", "quantity-metric":"3", "measure-us":"lbs", "measure-metric":"tons"}], ["herp", "derp", "done"], "http://placekitten.com/100/100", "Derpy Whooves", "9000", ["tomatoes", "tomato", "apple", "apple"], parseInt(("" + Math.random()).substring(2)), $('#filter').val());
 				});
 				
 				$("#registersubmit").click(function() {
@@ -151,14 +155,11 @@
 					hideDivs();
 				});
 				
-				var recipe = { recipeId: 1, title: 'Fried Rice', submitter: 'Kevin Hwang', cost: .50, rating: 9001};
-				now.appendRecipe(recipe);
-				
-				$('input').keypress(function (e) {
+				$('form > input').keypress(function (e) {
 					if (e.keyCode == 13) {
-						$(this).parent().children().last().click();
+						$(this).siblings().last().click();
 					}
-				})
+				});
 			});
 		</script>
 	</head>
@@ -198,24 +199,11 @@
 			<input type="button" id="refreshRecipeListT" value="REFRESH TOMATO!"/>
 			<input type="button" id="refreshRecipeListP" value="REFRESH POTATO!"/>
 			
+			<br>
+			<input type="text" id="filter" value="" />
+			
 			
 			<div id="recipelistdiv">
-				<div id="recipe5000" class="recipeBox">
-					<div class="recipeInfo">
-						<div class="recipeTitle">Chicken Cordon Bleu</div>
-						<div class="recipeEtc">By: Frederick Meyer | Price: $3 | Rating: 5/5</div>
-					</div>
-					<div class="recipeImg"><img src="http://placekitten.com/100/100"></div>
-				</div>
-				
-				<div id="recipe9001" class="recipeBox">
-					<div class="recipeInfo">
-						<div class="recipeTitle">Muffins</div>
-						<div class="recipeEtc">By: Pinkie Pie | Price $2.25 | Rating: 6/5</div>
-					</div>
-					<div class="recipeImg"><img src="http://placekitten.com/100/100"></div>
-				</div>
-			
 			</div>
 		</div>
 	</body>

@@ -52,9 +52,9 @@ var everyone = nowjs.initialize(server, {socketio:{"log level": process.argv[2]}
 
 //Client calls this after clearing the recipe list div to get all the recipes pertaining to search entry.
 everyone.now.getRecipeList = function(searchQuery, page) {
-	searchQuery = new RegExp('^' + searchQuery + '$', 'i');
+	searchQuery = ("" + searchQuery).toLowerCase();
 	var self = this;
-	if (searchQuery.toString() == "/^$/i") {
+	if (searchQuery === "") {
 		var cursor = collrecipes.find({}).skip((page-1)*10).limit(10);
 	 	cursor.toArray(function(err, array) {
 			array.map(self.now.appendRecipe);
@@ -90,7 +90,7 @@ recipeId = random integer for each recipe
 */
 
 //Client calls this when adding a recipe
-everyone.now.addRecipe = function(title, cost, ingredients, instructions, picture, submitter, time, tags, rId) {
+everyone.now.addRecipe = function(title, cost, ingredients, instructions, picture, submitter, time, tags, rId, currentSearch) {
 	collrecipes.insert(
 		{	
 			title: title,
@@ -110,7 +110,7 @@ everyone.now.addRecipe = function(title, cost, ingredients, instructions, pictur
 		}
 	);
 	//collrecipes.ensureIndex( { tags: 1 } );
-	everyone.now.refreshRecipeList("");
+	everyone.now.refreshRecipeList(currentSearch);
 };
 
 /*
@@ -166,8 +166,6 @@ everyone.now.finishRegister = function (uname, pwd) {
 should have separate error cases for: already logged in vs. username/pwd doesn't match.
 */
 everyone.now.tryLogin = function(uname, pwd) {
-	console.log("Username: " + uname);
-	console.log("Password: " + pwd);
 	var self = this;
 	collusers.findOne({username: uname}, function (err, doc) {
 		if (doc) {
@@ -203,13 +201,9 @@ everyone.now.finishLogin = function(uname, pwd) {
 everyone.now.tryLogout = function () {
 	var cookie = this.user.cookie, self = this;
 	collusers.findOne({username: cookie.username}, function (err, doc) {
-		console.log("HURRRR DURRRR");
-		console.log(cookie);
-		console.log(doc.password);
 		var hash = crypto.createHash('sha1');
 		hash.update(cookie.pwd);
 		if (doc.password == hash.digest('hex')) {
-			console.log("IT IS YOU!!!!!!!!!");
 			doc.loggedIn = false;
 			collusers.update({username: cookie.username}, doc, function (err, doc) {
 				self.now.finishLogout();
