@@ -198,3 +198,11 @@ everyone.now.finishLogin = function(uname) {
 		});
 	});
 }
+
+
+//this is our onjoin function. 
+
+nowjs.on('connect', function () {
+});
+
+

@@ -84,16 +84,20 @@
 					$('#headertext').html("<a href='#'>Logout</a>");
 				}
 				
+				
+				
 				hideDivs = function() {
 					$('#logindiv').hide()
 					$('#registerdiv').hide();
 				}
 				
 				displaySignIn = function() {
-					$('#logindiv').slideToggle('slow');
+					$('#logindiv').slideToggle(200);
+					$('#registerdiv').hide();
 				}
 				displayRegister = function() {
-					$('#registerdiv').slideToggle('slow');
+					$('#registerdiv').slideToggle(200);
+					$('#logindiv').hide();
 				}
 				
 				now.ready(function() {
