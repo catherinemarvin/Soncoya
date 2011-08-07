@@ -51,27 +51,18 @@ server.listen(80);
 var everyone = nowjs.initialize(server, {socketio:{"log level": process.argv[2]}});
 
 //Client calls this after clearing the recipe list div to get all the recipes pertaining to search entry.
-everyone.now.getRecipeList = function(searchQuery) {
+everyone.now.getRecipeList = function(searchQuery, page) {
+	searchQuery = new RegExp('^' + searchQuery + '$', 'i');
 	var self = this;
-	if (searchQuery == "") {
-		collrecipes.find( { }, function(err, docs){
-			if (docs) {
-				for (var i in docs) {
-					self.now.appendRecipe(docs[i]);
-				}
-			} else {
-				self.now.appendRecipe(null);
-			}
+	if (searchQuery.toString() == "/^$/i") {
+		var cursor = collrecipes.find({}).skip((page-1)*10).limit(10);
+	 	cursor.toArray(function(err, array) {
+			array.map(self.now.appendRecipe);
 		});
 	} else {
-		collrecipes.find( { tags: searchQuery }, function(err, docs){
-			if (docs) {
-				for (var i in docs) {
-					self.now.appendRecipe(docs[i]);
-				}
-			} else {
-				self.now.appendRecipe(null);
-			}
+		var cursor = collrecipes.find({tags: searchQuery}).skip((page-1)*10).limit(10);
+		cursor.toArray(function(err, array) {
+			array.map(self.now.appendRecipe);
 		});
 	}
 };
@@ -83,7 +74,7 @@ everyone.now.getRecipeList = function(searchQuery) {
 Recipe Database
 ---------------------------------------------
 title = string (Title of Recipe)
-cost = integer (Cost of Recipe in Dollars)
+cost = float (Cost of Recipe in Dollars)
 averageCost = integer (No input. Will eventually become the average cost of the people that review the recipe.)
 averageCostArray = [object(user, cost)] (array containing the costs by users)
 ingredients = [object(item, quantity-us, quantity-metric, measure-us, measure-metric)] (array containing the items in recipe with both us and metic values)
@@ -109,6 +100,7 @@ everyone.now.addRecipe = function(title, cost, ingredients, instructions, pictur
 			ingredients: ingredients,
 			instructions: instructions,
 			pictures: [picture],
+			submitter: submitter,
 			rating: 0,
 			ratingArray: [],
 			reviewArray: [],
@@ -117,8 +109,8 @@ everyone.now.addRecipe = function(title, cost, ingredients, instructions, pictur
 			recipeId: rId
 		}
 	);
-	collrecipes.ensureIndex( { tags: 1 } );
-	everyone.now.refreshRecipeList(tags);
+	//collrecipes.ensureIndex( { tags: 1 } );
+	everyone.now.refreshRecipeList("");
 };
 
 /*
@@ -239,12 +231,15 @@ pwd - singly hashed
 */
 
 everyone.now.setCookie = function (uname, pwd) {
+	if (!this.user.cookie) {
+		this.user.cookie = {};
+	}
 	this.user.cookie.username = uname;
 	this.user.cookie.pwd = pwd;
 }
 
 nowjs.on('connect', function () {
-	if (Object.keys(this.user.cookie).length && this.user.cookie.username !== undefined && this.user.cookie.pwd) { //if there is a cookie
+	if (this.user.cookie && Object.keys(this.user.cookie).length && this.user.cookie.username !== undefined && this.user.cookie.pwd) { //if there is a cookie
 		this.now.tryLogin(this.user.cookie.username, this.user.cookie.pwd);
 	} else { //if there isn't a cookie
 	
@@ -253,9 +248,10 @@ nowjs.on('connect', function () {
 
 nowjs.on('disconnect', function () {
 	var cookie = this.user.cookie;
-	console.log(cookie);
+	if (!cookie) {
+		return;
+	}
 	collusers.findOne({username: cookie.username}, function (err, doc) {
-		console.log(doc);
 		if (doc) {
 			doc.loggedIn = false;
 			collusers.update({username: cookie.username}, doc, function (err, doc) {

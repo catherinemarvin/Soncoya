@@ -15,6 +15,7 @@
 		
 		<script type = "text/javascript">
 			$(document).ready(function() {
+			
 				now.appendRecipe = function (recipe) {
 					var div = $("#recipelistdiv");
 					var recipeId = recipe.recipeId;
@@ -44,9 +45,32 @@
 					div.animate({ scrollTop: div.attr("scrollHeight") }, 500);		
 				};
 				
-				now.refreshRecipeList = function() {
-					
-				};
+				now.clearRecipeList = function () {
+					$("#recipelistdiv").html("");
+				}
+				now.refreshRecipeList = function (search) {
+					now.clearRecipeList();
+					now.getRecipeList(search, 1);
+				}
+				$("#refreshRecipeList").click(function () {
+					now.refreshRecipeList("");
+				});
+				
+				$('#refreshRecipeListT').click(function () {
+					now.refreshRecipeList("Apple");
+				});
+				
+				$('#refreshRecipeListP').click(function () {
+					now.refreshRecipeList("Potato");
+				});
+				
+				$("#exampleRecipe").click(function() {
+					now.addRecipe("DERP SOUP", "13", [{item:"muffins", "quantity-us":"2", "quantity-metric":"3", "measure-us":"lbs", "measure-metric":"tons"}, {item:"potatoes", "quantity-us":"2", "quantity-metric":"3", "measure-us":"lbs", "measure-metric":"tons"}], ["herp", "derp", "done"], "http://placekitten.com/100/100", "Derpy Whooves", "9000", ["potatoes", "potato", "muffin", "muffins"], parseInt(("" + Math.random()).substring(2)));
+				});
+				
+				$("#exampleRecipe1").click(function() {
+					now.addRecipe("TOMATO SOUP", "13", [{item:"muffins", "quantity-us":"2", "quantity-metric":"3", "measure-us":"lbs", "measure-metric":"tons"}, {item:"potatoes", "quantity-us":"2", "quantity-metric":"3", "measure-us":"lbs", "measure-metric":"tons"}], ["herp", "derp", "done"], "http://placekitten.com/100/100", "Derpy Whooves", "9000", ["tomatoes", "tomato", "apple", "apple"], parseInt(("" + Math.random()).substring(2)));
+				});
 				
 				$("#registersubmit").click(function() {
 					if ($('#unamereg').val() == "" | $('#pwdreg').val() == "") {
@@ -54,7 +78,7 @@
 					} else {
 						now.tryRegister($('#unamereg').val(), b64_sha1($('#pwdreg').val()));
 					}
-				})
+				});
 				
 				$("#loginsubmit").click(function() {
 					now.tryLogin($('#unamelogin').val(), b64_sha1($('#pwdlogin').val()));
@@ -62,7 +86,7 @@
 				
 				now.reRegisterAlert = function() {
 					alert("Username is already taken. Sadface.");
-				}
+				};
 				
 				now.reLoginAlert = function() {
 					alert("Username or password incorrect.");
@@ -167,6 +191,12 @@
 				</form>
 			</div>
 			
+			
+			<input type="button" id="exampleRecipe" value="RECIPE 1!"/>
+			<input type="button" id="exampleRecipe1" value="RECIPE 2!"/>
+			<input type="button" id="refreshRecipeList" value="REFRESH!"/>
+			<input type="button" id="refreshRecipeListT" value="REFRESH TOMATO!"/>
+			<input type="button" id="refreshRecipeListP" value="REFRESH POTATO!"/>
 			
 			
 			<div id="recipelistdiv">
