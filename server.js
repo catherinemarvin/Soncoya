@@ -67,6 +67,69 @@ everyone.now.getRecipeList = function(searchQuery, page) {
 	}
 };
 
+everyone.now.tryMoveBack = function(searchQuery, page) {
+	var page = parseInt(page);
+	var self = this;
+	searchQuery = ("" + searchQuery).toLowerCase();
+	var num = -1;
+	if (searchQuery === "") {
+		console.log("SEARCH QUERY IS EMPTY");
+		collrecipes.find({}).count(function(err, total) {
+			num = total;
+			console.log("TOTAL ES: ", total);
+			if ((page-1) > 0) {
+				self.now.refreshRecipeList(searchQuery, page-1)
+			} else {
+				console.log("YOU DONE GOOFED GOING UP");
+			}
+		});
+		console.log("huehuehuehue: ", num);
+	} else {
+		console.log("SEARCH QUERY IS NOT EMPTY");
+		collrecipes.find({tags: searchQuery}).count(function(err, total) {
+			num = total;
+			console.log("TOTAL ES: ", total);
+			if ((page-1) > 0) {
+				self.now.refreshRecipeList(searchQuery, page-1)
+			} else {
+				console.log("YOU DONE GOOFED GOING UP");
+			}
+		});
+	}
+}
+
+everyone.now.tryMoveForward = function(searchQuery, page) {
+	var page = parseInt(page);
+	var self = this;
+	console.log("PAGE: ", page);
+	searchQuery = ("" + searchQuery).toLowerCase();
+	console.log("SEARCH QUERY: ", searchQuery);
+	var num = -1;
+	if (searchQuery === "") {
+		console.log("SEARCH QUERY IS EMPTY");
+		collrecipes.find({}).count(function(err, total) {
+			num = total;
+			console.log("TOTAL ES: ", total);
+			if ((page+1) <= Math.ceil(num/10) && page > 0) {
+				self.now.refreshRecipeList(searchQuery, page+1)
+			} else {
+				console.log("YOU DONE GOOFED GOING UP");
+			}
+		});
+		console.log("huehuehuehue: ", num);
+	} else {
+		console.log("SEARCH QUERY IS NOT EMPTY");
+		collrecipes.find({tags: searchQuery}).count(function(err, total) {
+			num = total;
+			console.log("TOTAL ES: ", total);
+			if ((page+1) <= Math.ceil(num/10) && page > 0) {
+				self.now.refreshRecipeList(searchQuery, page+1)
+			} else {
+				console.log("YOU DONE GOOFED GOING UP");
+			}
+		});
+	}
+}
 
 
 /*
@@ -110,7 +173,7 @@ everyone.now.addRecipe = function(title, cost, ingredients, instructions, pictur
 		}
 	);
 	//collrecipes.ensureIndex( { tags: 1 } );
-	everyone.now.refreshRecipeList(currentSearch);
+	everyone.now.refreshRecipeList(currentSearch, 1);
 };
 
 /*

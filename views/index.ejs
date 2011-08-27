@@ -15,6 +15,8 @@
 		
 		<script type = "text/javascript">
 			$(document).ready(function() {
+				
+				var currentPage = 1;
 			
 				now.appendRecipe = function (recipe) {
 					var div = $("#recipelistdiv");
@@ -48,24 +50,39 @@
 				now.clearRecipeList = function () {
 					$("#recipelistdiv").html("");
 				}
-				now.refreshRecipeList = function (search) {
+				
+				now.refreshRecipeList = function (search, page) {
 					now.clearRecipeList();
-					now.getRecipeList(search, 1);
+					$('#currentpage').text(page);
+					now.getRecipeList(search, page);
 				}
+				
 				$("#refreshRecipeList").click(function () {
-					now.refreshRecipeList("");
+					now.refreshRecipeList("", currentPage);
 				});
 				
 				$('#refreshRecipeListT').click(function () {
-					now.refreshRecipeList("Apple");
+					now.refreshRecipeList("Apple", 1);
 				});
 				
 				$('#filter').keyup(function () {
-					now.refreshRecipeList($(this).val());
+					now.refreshRecipeList($(this).val(), 1);
 				});
 				
 				$('#refreshRecipeListP').click(function () {
-					now.refreshRecipeList("Potato");
+					now.refreshRecipeList("Potato", 1);
+				});
+				
+				$('#prevpage').click(function () {
+					now.tryMoveBack($("#filter").val(), $("#currentpage").text());
+					//currentPage = currentPage - 1;
+					//now.refreshRecipeList("", currentPage);
+				});
+				
+				$('#nextpage').click(function () {
+					now.tryMoveForward($("#filter").val(), $("#currentpage").text());
+					//currentPage = currentPage + 1;
+					//now.refreshRecipeList("", currentPage);
 				});
 				
 				$("#exampleRecipe").click(function() {
@@ -198,6 +215,9 @@
 			<input type="button" id="refreshRecipeList" value="REFRESH!"/>
 			<input type="button" id="refreshRecipeListT" value="REFRESH TOMATO!"/>
 			<input type="button" id="refreshRecipeListP" value="REFRESH POTATO!"/>
+			<input type="button" id="prevpage" value="Previous Page">
+			<input type="button" id="nextpage" value="Next Page">
+			<div id="currentpage">1</div>
 			
 			<br>
 			<input type="text" id="filter" value="" />
