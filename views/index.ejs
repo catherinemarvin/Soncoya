@@ -13,49 +13,12 @@
 		<!-- include the cookie stuff -->
 		<script type="text/javascript" src="jquery.cookie.js"></script>
 		
+		<script type="text/javascript" src="soncoya.js"></script>
+		
 		<script type = "text/javascript">
 			$(document).ready(function() {
 				
 				var currentPage = 1;
-			
-				now.appendRecipe = function (recipe) {
-					var div = $("#recipelistdiv");
-					var recipeId = recipe.recipeId;
-					div.append("<div id=\"recipe"+recipeId+"\" class=\"recipeBox\"></div>");
-					var title = recipe.title;
-					var author = recipe.submitter;
-					var price = recipe.cost;
-					var rating = recipe.rating;
-					var newdiv = $("#recipe"+recipeId);
-					var infodiv = $("<div>");
-					var titlediv = $("<div>");
-					var etcdiv = $("<div>");
-					var imgdiv = $("<div>");
-					infodiv.addClass("recipeInfo");
-					titlediv.addClass("recipeTitle");
-					etcdiv.addClass("recipeEtc");
-					imgdiv.addClass("recipeImg");
-					
-					newdiv.append(infodiv);
-					infodiv.append(titlediv);
-					infodiv.append(etcdiv);
-					newdiv.append(imgdiv);
-					
-					titlediv.append(title);
-					etcdiv.append("By: " + author + " | Price: $" + price + " | Rating: " + rating + "/5");
-					imgdiv.append("<img src='http://placekitten.com/100/100'></div>");
-					div.animate({ scrollTop: div.attr("scrollHeight") }, 500);		
-				};
-				
-				now.clearRecipeList = function () {
-					$("#recipelistdiv").html("");
-				}
-				
-				now.refreshRecipeList = function (search, page) {
-					now.clearRecipeList();
-					$('#currentpage').text(page);
-					now.getRecipeList(search, page);
-				}
 				
 				$("#refreshRecipeList").click(function () {
 					now.refreshRecipeList("", currentPage);
@@ -75,14 +38,10 @@
 				
 				$('#prevpage').click(function () {
 					now.tryMoveBack($("#filter").val(), $("#currentpage").text());
-					//currentPage = currentPage - 1;
-					//now.refreshRecipeList("", currentPage);
 				});
 				
 				$('#nextpage').click(function () {
 					now.tryMoveForward($("#filter").val(), $("#currentpage").text());
-					//currentPage = currentPage + 1;
-					//now.refreshRecipeList("", currentPage);
 				});
 				
 				$("#exampleRecipe").click(function() {
@@ -105,63 +64,11 @@
 					now.tryLogin($('#unamelogin').val(), b64_sha1($('#pwdlogin').val()));
 				});
 				
-				now.reRegisterAlert = function() {
-					alert("Username is already taken. Sadface.");
+				toggleSignIn = function() {
+					$('#registerdiv').slideUp(200);
+					$('#logindiv').slideToggle();
 				};
-				
-				now.reLoginAlert = function() {
-					alert("Username or password incorrect.");
-				}
-				
-				now.cleanLogin = function(uname, pwd) {
-					$('#logindiv').slideUp(200);
-					$('#unamelogin').val("");
-					$('#pwdlogin').val("");
-					$('#headertext').html("<a href='#' onclick='now.tryLogout()'>Logout</a>");
-					
-					//set cookie here
-					$.cookie('username', uname);
-					$.cookie('pwd', pwd);
-					now.setCookie(uname, pwd);
-				}
-				
-				//Cleans register div and removes it. Also replaces REGISTER - SIGNIN with just LOGOUT.
-				now.cleanRegister = function(uname, pwd) {
-					$('#registerdiv').slideUp(200);
-					$('#unamereg').val("");
-					$('#pwdreg').val("");
-					$('#headertext').html("<a href='#' onclick='now.tryLogout()'>Logout</a>");
-					
-					//set cookie here
-					$.cookie('username', uname);
-					$.cookie('pwd', pwd);
-					now.setCookie(uname, pwd);
-				}
-				
-				now.nullCookie = function () {
-					$.cookie('username', "");
-					$.cookie('pwd', "");
-				}
-				
-				//puts back the Register | Signin stuff
-				now.finishLogout = function() {
-					$('#headertext').html('<a href="#" onclick="displaySignIn();">Sign In</a> - <a href="#" onclick="displayRegister();">Register</a>');
-					$.cookie('username', null, {expires: -1});
-					$.cookie('pwd', null, {expires: -1});
-				}
-				
-				hideDivs = function() {
-					$('#logindiv').hide();
-					$('#registerdiv').hide();
-				}
-				
-				displaySignIn = function() {
-					$('#registerdiv').slideUp(200);
-					setTimeout(function () {
-						$('#logindiv').slideToggle(200);
-					}, 200);
-				}
-				displayRegister = function() {
+				toggleRegister = function() {
 					$('#logindiv').slideUp(200);
 					setTimeout(function () {
 						$('#registerdiv').slideToggle(200);
@@ -169,7 +76,7 @@
 				}
 				
 				now.ready(function() {
-					hideDivs();
+					
 				});
 				
 				$('form > input').keypress(function (e) {
@@ -180,15 +87,16 @@
 			});
 		</script>
 	</head>
+	
 	<body>
 		<div id="bodywrapper">
+			
 			<div id="header">
-				<div id="logo">Soncoya</div>
+				<div id="logo"></div>
 				<div id="headertext">
-					<a href="#" onclick="displaySignIn();">Sign In</a> - <a href="#" onclick="displayRegister();">Register</a>
+					<a href="#" onclick="toggleSignIn();">Sign In</a> - <a href="#" onclick="toggleRegister();">Register</a>
 				</div>
 			</div>
-			
 			<div id="logindiv">
 				<form name="loginform" action="/login" method="post">
 					Username 
@@ -208,8 +116,13 @@
 					<br><input type="button" id="registersubmit" value="Register!"/>
 				</form>
 			</div>
-			
-			
+		</div>
+		
+	</body>
+	<!--
+	<body>
+		<div id="bodywrapper">
+		
 			<input type="button" id="exampleRecipe" value="RECIPE 1!"/>
 			<input type="button" id="exampleRecipe1" value="RECIPE 2!"/>
 			<input type="button" id="refreshRecipeList" value="REFRESH!"/>
@@ -227,3 +140,6 @@
 			</div>
 		</div>
 	</body>
+	-->
+	
+	</html>
