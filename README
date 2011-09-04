@@ -1,1 +1,3 @@
-Dependencies: Node, Express, MongoDB, openid, now, crypto
+Dependencies: Node MongoDB
+
+npm packages: mongodb, express, now, crypto, ejs
