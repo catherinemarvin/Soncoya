@@ -1,12 +1,12 @@
 now.appendRecipe = function (recipe) {
 	var div = $("#recipelistdiv");
 	var recipeId = recipe.recipeId;
-	div.append("<div id=\"recipe"+recipeId+"\" class=\"recipeBox\"></div>");
+	div.append("<div id=\"recipe"+recipe.recipeId+"\" class=\"recipeBox\"></div>");
 	var title = recipe.title;
 	var author = recipe.submitter;
 	var price = recipe.cost;
 	var rating = recipe.rating;
-	var newdiv = $("#recipe"+recipeId);
+	var newdiv = $("#recipe"+recipe.recipeId);
 	var infodiv = $("<div>");
 	var titlediv = $("<div>");
 	var etcdiv = $("<div>");

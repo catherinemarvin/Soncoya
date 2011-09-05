@@ -153,7 +153,32 @@ recipeId = random integer for each recipe
 */
 
 //Client calls this when adding a recipe
-everyone.now.addRecipe = function(title, cost, ingredients, instructions, picture, submitter, time, tags, rId, currentSearch) {
+
+everyone.now.addRecipe = function (recipe, currentSearch) {
+	collrecipes.insert(
+		{	
+			title: recipe.title,
+			cost: recipe.cost,
+			averageCost: recipe.cost,
+			averageCostArray: [recipe.cost],
+			ingredients: recipe.ingredients,
+			instructions: recipe.instructions,
+			pictures: [recipe.pictures],
+			submitter: recipe.submitter,
+			rating: 0,
+			ratingArray: [],
+			reviewArray: [],
+			time: recipe.time,
+			tags: recipe.tags,
+			recipeId: recipe.rId
+		}
+	);
+	//collrecipes.ensureIndex( { tags: 1 } );
+	everyone.now.refreshRecipeList(currentSearch, 1);
+}
+
+/*
+everyone.now.addRecipe = function(title, cost, ingredients, instructions, pictures, submitter, time, tags, rId, currentSearch) {
 	collrecipes.insert(
 		{	
 			title: title,
@@ -175,6 +200,8 @@ everyone.now.addRecipe = function(title, cost, ingredients, instructions, pictur
 	//collrecipes.ensureIndex( { tags: 1 } );
 	everyone.now.refreshRecipeList(currentSearch, 1);
 };
+
+*/
 
 /*
 ----------------------------------------------

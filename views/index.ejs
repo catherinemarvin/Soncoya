@@ -25,7 +25,7 @@
 				});
 				
 				$('#refreshRecipeListT').click(function () {
-					now.refreshRecipeList("Apple", 1);
+					now.refreshRecipeList("Tomato", 1);
 				});
 				
 				$('#filter').keyup(function () {
@@ -45,11 +45,33 @@
 				});
 				
 				$("#exampleRecipe").click(function() {
-					now.addRecipe("DERP SOUP", "13", [{item:"muffins", "quantity-us":"2", "quantity-metric":"3", "measure-us":"lbs", "measure-metric":"tons"}, {item:"potatoes", "quantity-us":"2", "quantity-metric":"3", "measure-us":"lbs", "measure-metric":"tons"}], ["herp", "derp", "done"], "http://placekitten.com/100/100", "Derpy Whooves", "9000", ["potatoes", "potato", "muffin", "muffins"], parseInt(("" + Math.random()).substring(2)), $('#filter').val());
+					var toAdd = { 
+						"title" : "Herp Soup",
+						"cost" : 5,
+						"ingredients" : [{"item" : "derp", "quantity-us" : 2, "quantity-metric" : 5, "measure-us" : "lbs", "measure-metric" : "tons" }],
+						"instructions" : ["hue", "hue", "done"],
+						"pictures" : ["http://placekitten.com/100/100"],
+						"submitter" : "Rarity",
+						"time" : 9001,
+						"tags" : ["potatoes", "potato"],
+						"rId" : parseInt(("" + Math.random()).substring(2))
+					}
+					now.addRecipe(toAdd, $('#filter').val());
 				});
 				
 				$("#exampleRecipe1").click(function() {
-					now.addRecipe("TOMATO SOUP", "13", [{item:"muffins", "quantity-us":"2", "quantity-metric":"3", "measure-us":"lbs", "measure-metric":"tons"}, {item:"potatoes", "quantity-us":"2", "quantity-metric":"3", "measure-us":"lbs", "measure-metric":"tons"}], ["herp", "derp", "done"], "http://placekitten.com/100/100", "Derpy Whooves", "9000", ["tomatoes", "tomato", "apple", "apple"], parseInt(("" + Math.random()).substring(2)), $('#filter').val());
+					var toAdd = { 
+						"title" : "Tomato Creme Brulee",
+						"cost" : 666,
+						"ingredients" : [{"item" : "brulee", "quantity-us" : 10, "quantity-metric" : 20, "measure-us" : "oz", "measure-metric" : "grams" }],
+						"instructions" : ["tomato", "creme", "brulee"],
+						"pictures" : ["http://placekitten.com/100/100"],
+						"submitter" : "Derpy Hooves",
+						"time" : 2,
+						"tags" : ["tomatoes", "tomato"],
+						"rId" : parseInt(("" + Math.random()).substring(2))
+					}
+					now.addRecipe(toAdd, $('#filter').val());
 				});
 				
 				$("#registersubmit").click(function() {
@@ -96,7 +118,7 @@
 					<a href="#" onclick="toggleSignIn();">Sign In</a> - <a href="#" onclick="toggleRegister();">Register</a>
 				</div>
 			</div>
-			<div class="clear">
+			<div class="clear"></div>
 			<!--Here lie the login/register divs. These are hidden by default -->
 			<div id="logindiv">
 				<form name="loginform" action="/login" method="post">
