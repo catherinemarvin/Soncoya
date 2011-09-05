@@ -68,11 +68,10 @@
 					$('#registerdiv').slideUp(200);
 					$('#logindiv').slideToggle();
 				};
+				
 				toggleRegister = function() {
+					$('#registerdiv').slideToggle(200);
 					$('#logindiv').slideUp(200);
-					setTimeout(function () {
-						$('#registerdiv').slideToggle(200);
-					}, 200);
 				}
 				
 				now.ready(function() {
@@ -92,11 +91,13 @@
 		<div id="bodywrapper">
 			
 			<div id="header">
-				<div id="logo"></div>
+				<div id="logo"><img src="Soncoya.jpg"></div>
 				<div id="headertext">
 					<a href="#" onclick="toggleSignIn();">Sign In</a> - <a href="#" onclick="toggleRegister();">Register</a>
 				</div>
 			</div>
+			<div class="clear">
+			<!--Here lie the login/register divs. These are hidden by default -->
 			<div id="logindiv">
 				<form name="loginform" action="/login" method="post">
 					Username 
@@ -116,13 +117,11 @@
 					<br><input type="button" id="registersubmit" value="Register!"/>
 				</form>
 			</div>
-		</div>
-		
-	</body>
-	<!--
-	<body>
-		<div id="bodywrapper">
-		
+			<!--End login/register> -->
+			<div id="searchbar">
+				<input type="text" id="filter" placeholder="hay, oats, flowers" />
+			</div>
+			
 			<input type="button" id="exampleRecipe" value="RECIPE 1!"/>
 			<input type="button" id="exampleRecipe1" value="RECIPE 2!"/>
 			<input type="button" id="refreshRecipeList" value="REFRESH!"/>
@@ -132,14 +131,13 @@
 			<input type="button" id="nextpage" value="Next Page">
 			<div id="currentpage">1</div>
 			
-			<br>
-			<input type="text" id="filter" value="" />
-			
-			
-			<div id="recipelistdiv">
+			<div id="content">
+				<div id="recipelistdiv">
+				</div>
 			</div>
+			
 		</div>
+		
 	</body>
-	-->
 	
-	</html>
+</html>
