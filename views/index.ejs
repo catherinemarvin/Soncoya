@@ -15,8 +15,25 @@
 		
 		<script type="text/javascript" src="soncoya.js"></script>
 		
+		<script type="text/javascript" src="fileupload.js"></script>
+		
 		<script type = "text/javascript">
+			//trims spaces at beginning and end of a string.
+			String.prototype.trim = function() { var _ret = this.replace(/^\s+|\s+$/g, ''); return _ret.replace(/^(\&nbsp\;)+|(\&nbsp\;)+$/g, ''); }
+			
+			breakApart = function(str) {
+				var splitString = str.split(",");
+				for (x in splitString) {
+					splitString[x] = splitString[x].trim();
+				}
+				return splitString;
+			}
+			
 			$(document).ready(function() {
+				TCNDDU.setup();
+				
+				
+				
 				
 				var currentPage = 1;
 				
@@ -46,7 +63,7 @@
 				
 				$("#exampleRecipe").click(function() {
 					var toAdd = { 
-						"title" : "Herp Soup",
+						"title" : "Potato Ice Cream",
 						"cost" : 5,
 						"ingredients" : [{"item" : "derp", "quantity-us" : 2, "quantity-metric" : 5, "measure-us" : "lbs", "measure-metric" : "tons" }],
 						"instructions" : ["hue", "hue", "done"],
@@ -86,6 +103,25 @@
 					now.tryLogin($('#unamelogin').val(), b64_sha1($('#pwdlogin').val()));
 				});
 				
+				$("#addrecipesubmit").click(function () {
+					var random = parseInt(("" + Math.random()).substring(2));
+					var splitTags = $('#addrecipetags').val().split(",");
+					
+					var toAdd = {
+						"title" : $('#addrecipetitle').val(),
+						"cost" : $('#addrecipecost').val(),
+						"ingredients" : [{"item" : $('#addrecipeingredients').val(), "quantity-us" : 1, "quantity-metric" : 1, "measure-us" : "herp", "measure-metric" : "derp" }],
+						"instructions" : [$('#addrecipeinstructions').val()],
+						"pictures" : ["/picture/"+random+".jpg"],
+						"submitter" : $('#addrecipesubmitter').val(),
+						"time" : $('#addrecipetime').val(),
+						"tags" : breakApart($('#addrecipetags').val()),
+						"rId" : random
+					};
+					TCNDDU.handleDrop(random);
+					now.tryAddRecipe(toAdd, $('#filter').val());
+				});
+				
 				toggleSignIn = function() {
 					$('#registerdiv').slideUp(200);
 					$('#logindiv').slideToggle();
@@ -95,6 +131,11 @@
 					$('#registerdiv').slideToggle(200);
 					$('#logindiv').slideUp(200);
 				}
+				
+				toggleAddRecipeDiv = function () {
+					$('#addrecipediv').slideToggle(200);
+				}
+				
 				
 				now.ready(function() {
 					
@@ -113,7 +154,7 @@
 		<div id="bodywrapper">
 			
 			<div id="header">
-				<div id="logo"><img src="Soncoya.jpg"></div>
+				<div id="logo"><img src="Soncoya.png"></div>
 				<div id="headertext">
 					<a href="#" onclick="toggleSignIn();">Sign In</a> - <a href="#" onclick="toggleRegister();">Register</a>
 				</div>
@@ -144,19 +185,53 @@
 				<input type="text" id="filter" placeholder="hay, oats, flowers" />
 			</div>
 			
+			<!--
 			<input type="button" id="exampleRecipe" value="RECIPE 1!"/>
 			<input type="button" id="exampleRecipe1" value="RECIPE 2!"/>
 			<input type="button" id="refreshRecipeList" value="REFRESH!"/>
 			<input type="button" id="refreshRecipeListT" value="REFRESH TOMATO!"/>
 			<input type="button" id="refreshRecipeListP" value="REFRESH POTATO!"/>
+			-->
+			
 			<input type="button" id="prevpage" value="Previous Page">
 			<input type="button" id="nextpage" value="Next Page">
-			<div id="currentpage">1</div>
+			
+			<div id="topbar">
+				<div id="addrecipebuttondiv"><a href="#" onclick="toggleAddRecipeDiv()">Add recipe</a></div>
+			</div>
+			
+			<div id="addrecipediv">
+				<form name="addrecipeform" action="/addrecipe" method="post">
+				Title
+				<br><input type="text" id="addrecipetitle" name="addrecipetitle" placeholder="Hoisin Sauce Curry"/>
+				<br>Cost
+				<br><input type="text" id="addrecipecost" name="addrecipecost" placeholder="10"/>
+				<br>Ingredients
+				<br><input type="text" id="addrecipeingredients" name="addrecipeingredients" placeholder="Bricks, Muffins"/>
+				<br>Instructions
+				<br><input type="text" id="addrecipeinstructions" name="addrecipeinstructions" placeholder="Do random things"/>
+				<br>Pictures (100px x 100px)
+				<!--
+				<br><input type="text" id="addrecipepictures" name="addrecipepictures" placeholder="huehuehue placeholder"/>
+				-->
+				<br><input type="file" id="addrecipepicture" name="addrecipepicture">
+				<br>Submitter
+				<br><input type="text" id="addrecipesubmitter" name="addrecipesubmitter" placeholder="Fluttershy"/>
+				<br>Time
+				<br><input type="text" id="addrecipetime" name="addrecipetime" placeholder="1337"/>
+				<br>Tags
+				<br><input type="text" id="addrecipetags" name="addrecipetags" placeholder="mushrooms, turkey, pizza"/>
+				<br><input type="button" id="addrecipesubmit" value="Submit recipe">
+				</form>
+			</div>
 			
 			<div id="content">
 				<div id="recipelistdiv">
 				</div>
 			</div>
+			<div id="currentpage">1</div>
+			
+			
 			
 		</div>
 		

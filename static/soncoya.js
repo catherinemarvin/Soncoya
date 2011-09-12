@@ -23,7 +23,8 @@ now.appendRecipe = function (recipe) {
 	
 	titlediv.append(title);
 	etcdiv.append("By: " + author + " | Price: $" + price + " | Rating: " + rating + "/5");
-	imgdiv.append("<img src='http://placekitten.com/100/100'></div>");
+	//imgdiv.append("<img src='http://placekitten.com/100/100'></div>");
+	imgdiv.append("<img src="+recipe.pictures[0]+" width='100' height='100'></div>");
 	div.animate({ scrollTop: div.attr("scrollHeight") }, 500);		
 };
 

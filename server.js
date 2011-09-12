@@ -10,6 +10,15 @@ var nowjs = require('now');
 //require crypto
 var crypto = require('crypto');
 
+//require formidable
+var formidable = require("formidable");
+
+//require fs
+var fs = require('fs');
+
+//require path
+var path = require('path');
+
 //start express
 var server = express.createServer();
 
@@ -42,6 +51,35 @@ server.set('views', __dirname + '/views');
 //Routes
 server.get("/", function (req, res) {
 	res.render("index");
+});
+
+server.get("/picture/:id", function (req, res) {
+	filePath = path.join(__dirname, "/static/recipepics", req.param('id'));
+	stat = fs.statSync(filePath);
+	res.sendfile(filePath);
+});
+
+server.post('/upload/:id', function (req, res) {
+	console.log("so cool");
+	var form = new formidable.IncomingForm();
+	form.uploadDir = __dirname + '/static/recipepics';
+	form.encoding = 'binary';
+	
+	form.addListener('file', function (name, file) {
+		fs.rename(file.path, __dirname + "/static/recipepics/" + req.params.id + ".jpg", function () {
+			console.log("Renamed the file yeah!");
+		});
+	});
+	
+	form.addListener('end', function () {
+		res.end();
+	});
+	
+	form.parse (req, function (err, fields, files) {
+		if (err) {
+			console.log(err);
+		}
+	});
 });
 
 //Set server listening port (need root for port 80)
@@ -153,6 +191,11 @@ recipeId = random integer for each recipe
 */
 
 //Client calls this when adding a recipe
+
+everyone.now.tryAddRecipe = function (recipe, currentSearch) {
+	//attempt to validate..eventually
+	this.now.addRecipe(recipe, currentSearch);
+}
 
 everyone.now.addRecipe = function (recipe, currentSearch) {
 	collrecipes.insert(
